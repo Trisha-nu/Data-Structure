@@ -1,59 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
-typedef struct Node {
-	int number;
+struct Node {
+	int data;
 	struct Node* next;
-} Node;
-void Push(Node** head, int A)
-{
-	Node* n = malloc(sizeof(Node));
-	n->number = A;
-	n->next = *head;
-	*head = n;
+};
+void insertAtBeginning(struct Node** head_ref,int new_data){
+	struct Node* new_node= (struct Node*)malloc(sizeof(struct Node));
+	new_node->data = new_data;
+	new_node->next = *head_ref;
+	*head_ref = new_node;
 }
-void deleteN(Node** head, int position)
-{
-	Node* temp;
-	Node* prev;
-	temp = *head;
-	prev = *head;
-	for (int i = 0; i < position; i++) {
-		if (i == 0 && position == 1) {
-			*head = (*head)->next;
-			free(temp);
-		}
-		else {
-			if (i == position - 1 && temp) {
-				prev->next = temp->next;
-				free(temp);
-			}
-			else {
-				prev = temp;
-				if (prev == NULL)
-					break;
-				temp = temp->next;
-			}
-		}
+void deleteNode(struct Node** head_ref, int key){
+	struct Node* temp = *head_ref;
+	struct Node* prev = NULL;
+	if(temp !=NULL && temp->data == key){
+		*head_ref = temp->next;
+		free(temp);
+		return;
 	}
-}
-void printList(Node* head)
-{
-	while (head) {
-		printf("[%i] [%p]->%p\n", head->number, head,
-			head->next);
-		head = head->next;
+	while(temp != NULL && temp->data != key){
+		prev = temp;
+		temp = temp->next;
 	}
-	printf("\n\n");
+	if(temp == NULL){
+		printf("key not found in the list.\n");
+		return;
+	}
+	prev->next = temp->next;
+	free(temp);
 }
-int main()
-{
-	Node* list = malloc(sizeof(Node));
-	list->next = NULL;
-	Push(&list, 1);
-	Push(&list, 2);
-	Push(&list, 3);
-	printList(list);
-	deleteN(&list, 1);
-	printList(list);
+void printList(struct Node* node) {
+	while (node!= NULL){
+		printf("%d",node->data);
+		node=node->next;
+	}
+	printf("\n");
+}
+int main(){
+	struct Node* head = NULL;
+	insertAtBeginning(&head, 7);
+	insertAtBeginning(&head, 5);
+	insertAtBeginning(&head, 3);
+	insertAtBeginning(&head, 1);
+	printf("Original linked list: ");
+	printList(head);
+	deleteNode(&head, 5);
+	printf("linked list after deletion: ");
+	printList(head);
 	return 0;
 }

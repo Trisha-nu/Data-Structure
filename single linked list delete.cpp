@@ -1,51 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 struct Node {
-	int data;
-	struct Node* next;
+    int data;
+    struct Node* next;
 };
-void insertAtBeginning(struct Node** head_ref,int new_data){
-	struct Node* new_node= (struct Node*)malloc(sizeof(struct Node));
-	new_node->data = new_data;
-	new_node->next = *head_ref;
-	*head_ref = new_node;
+struct Node* head = NULL;
+void insert(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        struct Node* current = head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
 }
-void deleteNode(struct Node** head_ref, int key){
-	struct Node* temp = *head_ref;
-	struct Node* prev = NULL;
-	if(temp !=NULL && temp->data == key){
-		*head_ref = temp->next;
-		free(temp);
-		return;
-	}
-	while(temp != NULL && temp->data != key){
-		prev = temp;
-		temp = temp->next;
-	}
-	if(temp == NULL){
-		printf("key not found in the list.\n");
-		return;
-	}
-	prev->next = temp->next;
-	free(temp);
+void deletei(int value) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* current = head;
+    struct Node* previous = NULL;
+    if (current != NULL && current->data == value) {
+        head = current->next;
+        free(current);
+        return;
+    }
+    while (current != NULL && current->data != value) {
+        previous = current;
+        current = current->next;
+    }
+    if (current == NULL) {
+        printf("Value not found in the list\n");
+        return;
+    }
+    previous->next = current->next;
+    free(current);
 }
-void printList(struct Node* node) {
-	while (node!= NULL){
-		printf("%d",node->data);
-		node=node->next;
-	}
-	printf("\n");
+
+void traverse() {
+    struct Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
 }
-int main(){
-	struct Node* head = NULL;
-	insertAtBeginning(&head, 7);
-	insertAtBeginning(&head, 5);
-	insertAtBeginning(&head, 3);
-	insertAtBeginning(&head, 1);
-	printf("Original linked list: ");
-	printList(head);
-	deleteNode(&head, 5);
-	printf("linked list after deletion: ");
-	printList(head);
-	return 0;
+
+int main() {
+    insert(10);
+    insert(20);
+    insert(30);
+    insert(40);
+    printf("List: ");
+    traverse();
+    deletei(20);
+    printf("After deleting 20: ");
+    traverse();
+    deletei(10);
+    printf("After deleting 10: ");
+    traverse();
+    return 0;
 }
